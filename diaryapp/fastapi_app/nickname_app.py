@@ -49,6 +49,7 @@ def extract_adjectives(words):
     xr_xsa_etm = []
     va_etm = []
     etc_etm = ['특별한', '신선한', '아름다운', '기분좋은', '해맑은', '활기찬', '재밌는', '반짝이는']
+    prev_word = None  # 초기값 설정
 
     for word in words:
         pos_tags_words = komoran.pos(word)  # 각 단어의 품사 태깅
