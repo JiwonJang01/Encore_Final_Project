@@ -20,6 +20,7 @@ __pycache__/
 .env
 .venv
 *.py[cod]
+myproject/secrets/secrets.json
 
 # User directories #
 ###################
@@ -65,6 +66,7 @@ __pycache__/
 ../root@192.168.111.100
 
 .db_test.py
+.
 
  * Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
