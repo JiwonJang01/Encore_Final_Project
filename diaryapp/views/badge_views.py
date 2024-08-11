@@ -22,7 +22,7 @@ nickname_collection = db['diaryapp_nickname']
 
 # 뱃지 리스트 함수
 @require_http_methods(["GET"])
-#@login_required
+@login_required
 def list_badge(request):
 
     #로그인 사용자 이메일
