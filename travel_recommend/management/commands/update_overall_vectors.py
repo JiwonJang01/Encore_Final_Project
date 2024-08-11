@@ -3,8 +3,10 @@ import numpy as np
 import ast
 
 # MongoDB 클라이언트 설정
-client = MongoClient('mongodb://localhost:27017')
-db = client['MyDiary']
+# client = MongoClient('mongodb://localhost:27017')
+# db = client['MyDiary']
+from django.conf import settings
+db = settings.MONGO_CLIENT[settings.DATABASES['default']['NAME']]
 
 
 def string_to_numpy_array(s: str, vector_size=768):

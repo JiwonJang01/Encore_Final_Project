@@ -17,17 +17,13 @@ urlpatterns = [
 
     # 다이어리 상세화면
     path('detail_diary/<str:unique_diary_id>/', diarywrite_views.detail_diary_by_id, name='detail_diary_by_id'),
+    path('detail_diary/<str:unique_diary_id>/<str:user_email>', diarywrite_views.detail_diary_by_id, name='other_detail_diary_by_id'),
 
     # 다이어리 업데이트
     path('update_diary/<str:unique_diary_id>/', diarywrite_views.update_diary, name='update_diary'),
 
     # 다이어리 삭제
     path('delete_diary/<str:unique_diary_id>/', diarywrite_views.delete_diary, name='delete_diary'),
-
-    # 다이어리 메인
-    path('',diary_views.viewDiary, name='my_diary'),
-    path('view/<str:user_email>/', diary_views.viewDiary, name='other_diary'),
-    path('save_title_diary/', diary_views.save_title_diary, name='save_title_diary'),
 
     # 일정 모달창
     path('plan_modal/<str:unique_diary_id>/', diarywrite_views.plan_modal, name='plan_modal'),
@@ -62,11 +58,12 @@ urlpatterns = [
     # 리스트 다이어리
     path('all_list_diary/', diarywrite_views.list_diary, name='list_diary'),
     path('list_diary/', diarywrite_views.list_user_diary, name='list_user_diary'),
+    path('list_diary/<str:user_email>', diarywrite_views.list_user_diary, name='other_list_user_diary'),
 
     # 다이어리 메인
     path('', diary_views.viewDiary, name='user_diary_main'),
     path('<str:user_email>', diary_views.viewDiary, name='other_user_diary_main'),
-
+    path('save_title_diary/', diary_views.save_title_diary, name='save_title_diary'),
 ]
 
 if settings.DEBUG:

@@ -34,6 +34,8 @@ from .nickname_views import *
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from ..mongo_queries import filter_diaries, get_plan_by_id, get_available_plans as mongo_get_available_plans, \
     get_mongodb_connection
+from common.context_processors import get_user
+
 
 # MongoDB 클라이언트 설정
 db = settings.MONGO_CLIENT[settings.DATABASES['default']['NAME']]
@@ -457,7 +459,7 @@ def filter_user_diaries(year=None, month=None, user_email=None):
 
     return AiwriteModel.objects.filter(**query).order_by('-created_at')
 
-def list_user_diary(request):
+def list_user_diary(request, user_email=None):
     start = time.time()
     form = DateFilterForm(request.GET or None)
     year = None
@@ -469,12 +471,14 @@ def list_user_diary(request):
     db = get_mongodb_connection()
     aiwritemodel_collection = db['diaryapp_aiwritemodel']
 
-    # 로그인 사용자 이메일
-    user_email = request.session.get('userSession')
-    print(f'-----------------user_email_session-----list_user_diary------------{user_email}')
+    # 사용자 정보 가져오기
+    user_info = get_user(request, user_email)
+    user = user_info['user']
+    is_own_page = user_info['is_own_page']
+    print(f'-----------get_user 사용-----list_user_diary------------{user['email']}')
 
     # 사용자의 이메일로 다이어리를 필터링합니다.
-    diary_list = filter_user_diaries(year, month, user_email)
+    diary_list = filter_user_diaries(year, month, user['email'])
     print(f"Diaries returned to view: {len(diary_list)}")
 
     # 페이징 설정
@@ -500,7 +504,14 @@ def list_user_diary(request):
                 nickname_id, nickname, badge_name, badge_image = get_nickname(diary.nickname_id)
 
             mongo_diary = aiwritemodel_collection.find_one(
-                {"unique_diary_id": unique_diary_id, "user_email": user_email})
+                {"unique_diary_id": unique_diary_id, "user_email": user['email']})
+
+            unique_diary_id = diary.unique_diary_id
+            if is_own_page:
+                detail_link = reverse('detail_diary_by_id', kwargs={'unique_diary_id': unique_diary_id})
+            else:
+                detail_link = reverse('other_detail_diary_by_id',
+                                      kwargs={'unique_diary_id': unique_diary_id, 'user_email': user['email']})
 
             enriched_diary = {
                 'diary': diary,
@@ -508,6 +519,7 @@ def list_user_diary(request):
                 'badge_name': badge_name,
                 'badge_image': badge_image,
                 'representative_image': mongo_diary.get('encoded_representative_image') if mongo_diary else None,
+                'detail_link': detail_link
             }
             enriched_diary_list.append(enriched_diary)
 
@@ -647,10 +659,13 @@ def plan_modal(request, unique_diary_id):
 '''
 user가 생기면 변경 - 로그인한 사용자를 기준으로 자신이 작성한 일기와 다른 사용자가 작성한 일기를 볼 때 화면이 다름
 '''
-def detail_diary_by_id(request, unique_diary_id):
-    # 로그인 사용자 이메일
-    user_email = request.session.get('userSession')
-    print(f'-----------------user_email_session-----detail_diary_by_id------------{user_email}')
+def detail_diary_by_id(request, unique_diary_id, user_email=None):
+
+    # 사용자 정보 가져오기
+    user_info = get_user(request, user_email)
+    user = user_info['user']
+    is_own_page = user_info['is_own_page']
+    print(f'----------------------detail_diary_by_id------------{user['email']}')
 
     diary = get_object_or_404(AiwriteModel, unique_diary_id=unique_diary_id)
     form = CommentForm()
@@ -697,10 +712,11 @@ def detail_diary_by_id(request, unique_diary_id):
         'nickname': nickname,
         'badge_name': badge_name,
         'badge_image': badge_image,
+        'user_email' : user['email'],
     }
 
     # 사용자에 따라 템플릿 분기
-    if diary.user_email == user_email:
+    if is_own_page:
         template = 'diaryapp/detail_diary.html'
     else:
         template = 'diaryapp/detail_diary_otheruser.html'

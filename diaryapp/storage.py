@@ -6,8 +6,10 @@ from myproject import settings
 from gridfs import GridFS
 from pymongo import MongoClient
 
-client = MongoClient('mongodb://localhost', 27017)
-db = client['diary']  # MongoDB 데이터베이스 이름
+# client = MongoClient('mongodb://localhost', 27017)
+# db = client['diary']  # MongoDB 데이터베이스 이름
+from django.conf import settings
+db = settings.MONGO_CLIENT[settings.DATABASES['default']['NAME']]
 fs = GridFS(db, collection='fs')  # 'fs'는 GridFS 컬렉션 이름
 
 

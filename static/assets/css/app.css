@@ -606,13 +606,12 @@ main {
 .select_travel{display:flex;flex:1;border-radius:0.25em;overflow:hidden}
 .select_travel .box_select{position:relative;width:50%;overflow:hidden}
 .select_travel .link_select{display:flex;z-index:10;align-items:center;justify-content:center;width:100%;height:100%;flex:1}
-.select_travel .link_select:after{position:absolute;left:0;right:0;bottom:0;top:0;background-color:rgba(0,0,0,0.2);content:''}
-
+.select_travel .link_select:after{position:absolute;left:0;right:0;bottom:0;top:0;background-color:rgba(0,0,0,0.02);content:''}
 .select_travel img{position:absolute;width:100%;height:100%;object-fit:cover;vertical-align:top;transition:transform 0.3s ease;}
 .select_travel .link_select:hover img,.select_travel .link_select:focus img{transform: scale(1.05);}
-.select_travel .scope_info{text-align:center;z-index:1;color:#fff}
+.select_travel .scope_info{text-align:center;z-index:1;color:#fff;text-shadow:1px 1px 3px rgba(0, 0, 0, 0.3);}
 .select_travel .tit_select{color:#fff !important;font-weight:500;font-size:2.5em;margin-bottom:.2em}
-.select_travel .txt_select{font-size:1.5em;font-weight:300;margin-bottom:0}
+.select_travel .txt_select{font-size:1.5em;font-weight:400;margin-bottom:0}
 @media screen and (max-width: 480px) {
   .info_travel .tit_info{font-size:2.5em}
   .info_travel .txt_info{margin-bottom:1em}

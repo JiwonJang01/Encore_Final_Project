@@ -8,9 +8,11 @@ import time
 urls = "http://apis.data.go.kr/B551011/KorService1/detailCommon1"
 key = "메롱"
 
-client = MongoClient('mongodb://localhost:27017/',
-                     27017)
-db = client.diaryData
+# client = MongoClient('mongodb://localhost:27017/',
+#                      27017)
+# db = client.diaryData
+from django.conf import settings
+db = settings.MONGO_CLIENT[settings.DATABASES['default']['NAME']]
 
 # contentTypeId 리스트
 contentTypeIds = [12, 14, 28, 38, 39]

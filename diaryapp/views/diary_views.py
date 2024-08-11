@@ -53,7 +53,7 @@ def viewDiary(request, user_email=None):
         diary = diary_collection.find_one({'nickname_id': main_nickname_id})
         if diary :
             unique_diary_id = diary.get('unique_diary_id','')
-            badge_link = reverse('detail_diary_by_id', kwargs={'unique_diary_id': unique_diary_id})
+            badge_link = reverse('other_detail_diary_by_id', kwargs={'unique_diary_id': unique_diary_id, 'user_email':user['email']})
         else :
             badge_link = "#"
 
@@ -82,12 +82,19 @@ def viewDiary(request, user_email=None):
 
                 representative_image = diary.get('encoded_representative_image')
 
+                unique_diary_id = diary.get('unique_diary_id', '')
+                if is_own_page :
+                    detail_link = reverse('detail_diary_by_id',kwargs={'unique_diary_id': unique_diary_id})
+                else :
+                    detail_link = reverse('other_detail_diary_by_id',kwargs={'unique_diary_id': unique_diary_id, 'user_email': user['email']})
+
                 enriched_diary = {
                     'diary': diary,
                     'representative_image': representative_image,
                     'nickname': nickname,
                     'badge_name': badge_name,
-                    'badge_image': badge_image
+                    'badge_image': badge_image,
+                    'detail_link': detail_link
                 }
                 enriched_diary_list.append(enriched_diary)
             except Exception as e:
