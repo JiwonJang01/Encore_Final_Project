@@ -13,6 +13,7 @@ def get_mongodb_connection():
     db = client['MyDiary']
     return db
 
+
 def filter_diaries(year=None, month=None):
     db = get_mongodb_connection()
     aiwritemodel_collection = db['diaryapp_aiwritemodel']
@@ -44,7 +45,9 @@ def filter_diaries(year=None, month=None):
         {'$sort': {'created_at': -1}}
     ]
 
-    result = list(aiwritemodel_collection.aggregate(pipeline))
+    # `allowDiskUse=True` 옵션을 추가하여 메모리 초과 문제를 방지합니다.
+    result = list(aiwritemodel_collection.aggregate(pipeline, allowDiskUse=True))
+
     print(f"Total diaries found: {len(result)}")
     for diary in result:
         print(f"Diary: {diary.get('diarytitle', 'No title')}, "

@@ -379,7 +379,7 @@ logger = logging.getLogger(__name__)
 
 '''전체 일기 리스트'''
 def list_diary(request):
-    start=time.time()
+    start = time.time()
     form = DateFilterForm(request.GET or None)
     year = None
     month = None
