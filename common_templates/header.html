@@ -74,4 +74,4 @@
 	</div>
 {% include 'main_badge.html' %}
 </header>
-<div id="main" class="cont_tour">
+<div id="main" class="cont_tour{% if request.path == '/travel/' %} cont_travel{% endif %}">

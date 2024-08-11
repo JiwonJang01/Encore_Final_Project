@@ -710,7 +710,6 @@ function addMarker(day, placeName, lat, lng) {
     var markerPosition = new kakao.maps.LatLng(lat, lng);
     var marker = new kakao.maps.Marker({
         position: markerPosition,
-        title: placeName
     });
 
     marker.setMap(map);
@@ -1118,7 +1117,7 @@ function closeOverlay() {
         var city = document.querySelector('#citySelect option:checked').textContent;
         var province = document.querySelector('#provinceSelect option:checked').textContent;
         var places = getPlacesData(); // 동적으로 places 객체를 가져옵니다
-        var email = user.email;
+        var email = "{{ user.email }}";
         var PK = generateTemporaryPK();
 
         var data = JSON.stringify({
@@ -1169,10 +1168,10 @@ function closeOverlay() {
         });
 }
 </script>
-<script>
-    const user = {{ user|safe }};
-    console.log("Logged-in user information:", user);
-</script>
+<!--<script>-->
+<!--    const user = {{ user|safe }};-->
+<!--    console.log("Logged-in user information:", user);-->
+<!--</script>-->
 <script>
     function resizeIframe() {
         var iframe = window.parent.document.querySelector('iframe');
