@@ -381,7 +381,7 @@ logger = logging.getLogger(__name__)
 
 '''전체 일기 리스트'''
 def list_diary(request):
-    start=time.time()
+    start = time.time()
     form = DateFilterForm(request.GET or None)
     year = None
     month = None
@@ -722,13 +722,90 @@ def detail_diary_by_id(request, unique_diary_id, user_email=None):
         template = 'diaryapp/detail_diary_otheruser.html'
     return render(request, template, context)
 
-'''일기 내용 업데이트'''
+'''일기 내용 수정하기'''
 # @login_required # html에서 할 수 있으면 삭제
+# def update_diary(request, unique_diary_id):
+#     diary = get_object_or_404(AiwriteModel, unique_diary_id=unique_diary_id)
+#
+#     if request.method == 'POST':
+#         form = DiaryForm(request.POST, instance=diary)
+#         image_form = ImageUploadForm(request.POST, request.FILES)
+#
+#         if form.is_valid() and image_form.is_valid():
+#             try:
+#                 updated_diary = form.save(commit=False)
+#
+#                 # 대표 이미지 처리
+#                 representative_image = request.FILES.get('image_file')
+#                 if representative_image:
+#                     if diary.representative_image:
+#                         diary.representative_image.delete()  # 기존 대표 이미지 삭제
+#                     image_model = ImageModel(is_representative=True)
+#                     image_model.save_image(Image.open(representative_image))
+#                     image_model.save()
+#                     updated_diary.representative_image = image_model
+#
+#                     # 이미지 인코딩 및 MongoDB 업데이트
+#                     buffered = BytesIO()
+#                     Image.open(representative_image).save(buffered, format="PNG")
+#                     encoded_image = base64.b64encode(buffered.getvalue()).decode()
+#
+#                     db = get_mongodb_connection()
+#                     aiwritemodel_collection = db['diaryapp_aiwritemodel']
+#                     aiwritemodel_collection.update_one(
+#                         {"unique_diary_id": unique_diary_id},
+#                         {"$set": {"encoded_representative_image": encoded_image}}
+#                     )
+#
+#                 updated_diary.save()
+#
+#                 # 추가 이미지 처리
+#                 for img in request.FILES.getlist('images'):
+#                     additional_image_model = ImageModel(is_representative=False)
+#                     additional_image_model.save_image(Image.open(img))
+#                     additional_image_model.save()
+#                     updated_diary.images.add(additional_image_model)
+#
+#                 # 이미지 삭제 처리
+#                 for image_id in request.POST.getlist('delete_images'):
+#                     image_to_delete = ImageModel.objects.get(id=image_id)
+#                     updated_diary.images.remove(image_to_delete)
+#                     image_to_delete.delete()
+#
+#                 messages.success(request, '다이어리가 성공적으로 수정되었습니다.')
+#                 return redirect(reverse('detail_diary_by_id', kwargs={'unique_diary_id': unique_diary_id}))
+#             except Exception as e:
+#                 logger.error(f"Error updating diary: {str(e)}")
+#                 messages.error(request, '다이어리 수정 중 오류가 발생했습니다.')
+#         else:
+#             logger.error(f"Form errors: {form.errors}")
+#             logger.error(f"Image form errors: {image_form.errors}")
+#             messages.error(request, '입력한 정보가 올바르지 않습니다. 다시 확인해주세요.')
+#     else:
+#         form = DiaryForm(instance=diary)
+#         image_form = ImageUploadForm()
+#
+#     existing_images = diary.images.all()
+#
+#     context = {
+#         'form': form,
+#         'image_form': image_form,
+#         'diary': diary,
+#         'existing_images': existing_images,
+#     }
+#
+#     return render(request, 'diaryapp/update_diary.html', context)
+
+'''일기 내용 수정하기'''
+'''일기 내용 수정하기'''
 def update_diary(request, unique_diary_id):
     diary = get_object_or_404(AiwriteModel, unique_diary_id=unique_diary_id)
 
     if request.method == 'POST':
+        # 기존의 emotion 필드를 제외한 나머지 필드만 업데이트하도록 Form을 수정
         form = DiaryForm(request.POST, instance=diary)
+        form.fields.pop('emotion')  # emotion 필드를 폼에서 제거
+
         image_form = ImageUploadForm(request.POST, request.FILES)
 
         if form.is_valid() and image_form.is_valid():
@@ -783,6 +860,7 @@ def update_diary(request, unique_diary_id):
             messages.error(request, '입력한 정보가 올바르지 않습니다. 다시 확인해주세요.')
     else:
         form = DiaryForm(instance=diary)
+        form.fields.pop('emotion')  # GET 요청 시에도 emotion 필드를 제거
         image_form = ImageUploadForm()
 
     existing_images = diary.images.all()
@@ -793,6 +871,9 @@ def update_diary(request, unique_diary_id):
         'diary': diary,
         'existing_images': existing_images,
     }
+
+    return render(request, 'diaryapp/update_diary.html', context)
+
 
     return render(request, 'diaryapp/update_diary.html', context)
 
