@@ -19,6 +19,7 @@ from datetime import timedelta
 import sys
 import urllib.parse
 
+from pymongo import MongoClient
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_BASE_DIR = Path(__file__).resolve().parent
@@ -29,15 +30,6 @@ load_dotenv(dotenv_path=env_path)
 
 SECRET_BASE_FILE = os.path.join(CONFIG_BASE_DIR, 'secrets/secrets.json')
 secrets = json.loads(open(SECRET_BASE_FILE).read())
-
-secrets['SECRET_KEY'] = os.getenv('SECRET_KEY')
-secrets['NAVER_CLIENT_ID'] = os.getenv('NAVER_CLIENT_ID')
-secrets['NAVER_REDIRECT_URI'] = "http://localhost:8000/oauth/naver/login/callback/"
-secrets['NAVER_CLIENT_SECRET'] = os.getenv('NAVER_CLIENT_SECRET')
-secrets['STATE'] = os.getenv('STATE')
-
-with open(SECRET_BASE_FILE, 'w') as f:
-    json.dump(secrets, f, indent=4)
 for key, value in secrets.items():
     setattr(sys.modules[__name__], key, value)
 
@@ -193,8 +185,11 @@ CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'  # CSRF 토큰을 포함할 헤더 이름
 WSGI_APPLICATION = "myproject.wsgi.application"
 
 
-# # MongoDB 도커
+
+# # MongoDB 설정
 # MONGO_URI = 'mongodb://192.168.0.25:27017/'
+#
+# # MongoDB 도커
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',
@@ -202,14 +197,13 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 #         'ENFORCE_SCHEMA': False,
 #         'CLIENT': {
 #             #'host': 'mongodb://127.0.0.1:27017/',  # MongoDB 호스트 주소 (기본적으로는 localhost)
-#             # 'host': 'mongodb://192.168.0.25:27017/',
-#             'host': f"mongodb://{os.getenv('ADMINUSER')}:{os.getenv('ADMINPASSWORD')}@192.168.0.25:27017/?authSource=MyDiary",
+#             'host': 'mongodb://192.168.0.25:27017/',
 #         }
 #     }
 # }
 # # MongoDB 클라이언트 설정
 # mongo_client = pymongo.MongoClient(DATABASES['default']['CLIENT']['host'],
-#                                     )
+#                                    )
 # # mongo_client를 settings에 추가
 # MONGO_CLIENT = mongo_client
 
@@ -217,6 +211,7 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 
 # MongoDB atlas
 MONGO_URI = os.getenv('ATLAS_URI')
+
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',

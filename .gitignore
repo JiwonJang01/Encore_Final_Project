@@ -20,6 +20,7 @@ __pycache__/
 .env
 .venv
 *.py[cod]
+myproject/secrets/secrets.json
 
 # User directories #
 ###################
@@ -42,6 +43,7 @@ __pycache__/
 /node_modules/
 /root@192.168.111.100
 /diaryapp/models/
+myproject/secrets/secrets.json
 
 # Ignore other directories and files at root level
 ../.*
@@ -63,6 +65,9 @@ __pycache__/
 ../miniconda3/
 ../node_modules/
 ../root@192.168.111.100
+
+.db_test.py
+.
 
 .db_test.py
 

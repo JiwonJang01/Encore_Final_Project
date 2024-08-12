@@ -5,7 +5,7 @@
     <div class="write-container">
         <h1 style="color: #636363; font-weight: bold;">{{ diary.diarytitle }}</h1>
         <div class="badge_tour">
-            <a {% if is_own_page %}href="{% url 'list_badge' %}"{% endif %} class="link_badge">
+            <a href="{% url 'list_badge' %}" class="link_badge">
                 <span class="scope_badge">
                     <em class="screen_out">{{ badge_name }} 뱃지</em>
                     <img src="data:image/png;base64,{{ badge_image }}" class="img_badge" alt="{{ badge_name }}">
@@ -48,7 +48,7 @@
 
             <!-- 리스트로 돌아가는 버튼 -->
             <button class="btn-diary-action">
-                <a href="{% url 'list_diary' %}">리스트로 돌아가기</a>
+                <a href="{% url 'list_user_diary' %}">리스트로 돌아가기</a>
             </button>
         </div>
         <br/><br/>
@@ -70,21 +70,19 @@
                     <div class="badge_tour">
                         {% if comment.badge_name and comment.badge_image %}
                             <span class="scope_badge">
-                                <a href="{% url 'other_diary' comment.user_email %}">
+                                <a href="{% url 'other_user_diary_main' comment.user_email %}">
                                     <img src="data:image/png;base64,{{ comment.badge_image }}" alt="{{ comment.badge_name }} 뱃지" class="img_badge">
                                     {{ comment.badge_name }} 뱃지
                                 </a>
                             </span>
                         {% endif %}
-                        <a href="{% url 'other_diary' comment.user_email %}">
+                        <a href="{% url 'other_user_diary_main' comment.user_email %}">
                             <strong>{{ comment.nickname }}</strong>
                         </a>
                         {{ comment.created_at|date:"Y년 n월 j일" }}
                     </div>
                     <p>{{ comment.comment }}</p>
-                    {% if request.user.email == comment.user_email %}
-                        <a href="{% url 'delete_comment' diary.unique_diary_id comment.comment_id %}">댓글 삭제</a>
-                    {% endif %}
+                    <a href="{% url 'delete_comment' diary.unique_diary_id comment.comment_id %}" class="btn-diary-action">댓글 삭제</a>
                     <hr>
                 {% empty %}
                     <p>댓글이 없습니다.</p>

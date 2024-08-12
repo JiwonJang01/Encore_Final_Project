@@ -64,7 +64,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', PROJECT_ROOT)
 django.setup()
 
 # MongoDB 클라이언트 설정
-# client = pymongo.MongoClient('mongodb://127.0.0.1:27017')
+# client = pymongo.MongoClient('mongodb://localhost:27017')
 # db = client['MyDiary']
 from django.conf import settings
 db = settings.MONGO_CLIENT[settings.DATABASES['default']['NAME']]
@@ -99,6 +99,9 @@ class UserInput(BaseModel):
 
 class Recommendation(BaseModel):
     title: str
+    mapx: float
+    mapy: float
+    contentid: str
 
 class DayPlan(BaseModel):
     date: str
@@ -651,6 +654,7 @@ async def recommend_schedule(user_input: UserInput):
                 'date': (start_date + timedelta(days=day)).strftime('%Y-%m-%d'),
                 'recommendations': transform_object_id(daily_recommendations)
             })
+            logger.info(f"***************Daily Recommendations: {daily_recommendations}")
 
         # MongoDB에 일정 저장
         plan_id = str(uuid.uuid4())
@@ -659,7 +663,7 @@ async def recommend_schedule(user_input: UserInput):
             'province': user_input.region,
             'city': user_input.subregion,
             'plan_title': f"{user_input.region}의 여행 일정",
-            'email': 'neweeee@gmail.com',  # 이 부분은 실제 이메일로 교체해야 합니다.
+            'email': request.user.email,  # 이 부분은 실제 이메일로 교체해야 합니다.
             'days': itinerary
         }
         db.plan.insert_one(plan_data)
@@ -689,7 +693,12 @@ async def get_plan(plan_id: str):
         for day in plan_data["days"]:
             day_plan = DayPlan(
                 date=day["date"],
-                recommendations=[Recommendation(title=rec["title"]) for rec in day["recommendations"]]
+                recommendations=[Recommendation(
+                    title=rec["title"],
+                    mapx=rec.get("mapx"),
+                    mapy=rec.get("mapy"),
+                    contentid=rec.get("contentid")
+                ) for rec in day["recommendations"]]
             )
             itinerary.append(day_plan)
 
