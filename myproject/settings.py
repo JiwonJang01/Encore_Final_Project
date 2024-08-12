@@ -30,15 +30,6 @@ load_dotenv(dotenv_path=env_path)
 
 SECRET_BASE_FILE = os.path.join(CONFIG_BASE_DIR, 'secrets/secrets.json')
 secrets = json.loads(open(SECRET_BASE_FILE).read())
-
-secrets['SECRET_KEY'] = os.getenv('SECRET_KEY')
-secrets['NAVER_CLIENT_ID'] = os.getenv('NAVER_CLIENT_ID')
-secrets['NAVER_REDIRECT_URI'] = "http://localhost:8000/oauth/naver/login/callback/"
-secrets['NAVER_CLIENT_SECRET'] = os.getenv('NAVER_CLIENT_SECRET')
-secrets['STATE'] = os.getenv('STATE')
-
-with open(SECRET_BASE_FILE, 'w') as f:
-    json.dump(secrets, f, indent=4)
 for key, value in secrets.items():
     setattr(sys.modules[__name__], key, value)
 
