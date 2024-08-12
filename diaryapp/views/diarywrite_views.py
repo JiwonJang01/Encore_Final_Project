@@ -471,11 +471,14 @@ def list_user_diary(request, user_email=None):
     db = get_mongodb_connection()
     aiwritemodel_collection = db['diaryapp_aiwritemodel']
 
+    print(f'-----------get_user 사용-----list_user_diary------------{user_email}')
+
     # 사용자 정보 가져오기
     user_info = get_user(request, user_email)
     user = user_info['user']
     is_own_page = user_info['is_own_page']
     print(f'-----------get_user 사용-----list_user_diary------------{user['email']}')
+
 
     # 사용자의 이메일로 다이어리를 필터링합니다.
     diary_list = filter_user_diaries(year, month, user['email'])
@@ -712,9 +715,9 @@ def detail_diary_by_id(request, unique_diary_id, user_email=None):
         'nickname': nickname,
         'badge_name': badge_name,
         'badge_image': badge_image,
-        'user_email' : user['email'],
+        'user_email': user['email'],
     }
-
+    print(f"{context}")
     # 사용자에 따라 템플릿 분기
     if is_own_page:
         template = 'diaryapp/detail_diary.html'
