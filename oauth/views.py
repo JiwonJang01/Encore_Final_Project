@@ -152,6 +152,8 @@ class NaverCallbackView(APIView):
 
             # 사용자 로그인 처리
             # login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            request.session['userSession'] = user.email
+            request.session['userNickname'] = user.nickname
 
             #로그 추가
             print(f"User {user.email} logged in successfully with session key: {request.session.session_key}")
