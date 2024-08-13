@@ -547,9 +547,10 @@ def list_user_diary(request, user_email=None):
 '''일기 내용 확인'''
 # def detail_diary_by_id(request, unique_diary_id):
 #     # 로그인 사용자 이메일
-#     user_email = request.session.get('userSession')
-#     print(f'-----------------user_email_session-----일기 내용 확인------------{user_email}')
+#     user_email = 'neweeee@gmail.com'
+#     # print(f'-----------------user_email_session-----일기 내용 확인------------{user_email}')
 #     diary = get_object_or_404(AiwriteModel, unique_diary_id=unique_diary_id)
+#
 #     form = CommentForm()
 #     comment_list = CommentModel.objects.filter(diary_id=diary).order_by('-created_at')
 #

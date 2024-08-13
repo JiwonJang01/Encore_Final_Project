@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pymongo import MongoClient
 
 client = MongoClient('mongodb://192.168.0.25:27017/')
@@ -30,11 +32,11 @@ from pymongo import MongoClient, ASCENDING
 # 특정 컬렉션의 모든 데이터 삭제
 # 컬렉션들 선택
 # collections = [
-#     # 'diaryapp_aiwritemodel',
+#     'diaryapp_aiwritemodel',
 #     # 'diaryapp_commentmodel',
 #     # 'diaryapp_imagemodel',
 #     # 'diaryapp_aiwritemodel_images'
-#     'diaryapp_nickname'
+#     # 'diaryapp_nickname'
 # ]
 #
 # # 각 컬렉션의 모든 데이터 삭제
@@ -87,12 +89,40 @@ from pymongo import MongoClient, ASCENDING
 # # )
 
 # 조회할 컬렉션 이름
-collection_name = 'plan'  # 컬렉션 이름을 변경하세요.
+collection_name = 'diaryapp_aiwritemodel'  # 컬렉션 이름을 변경하세요.
 collection = db[collection_name]
 
-# 모든 문서 조회
-documents = collection.find()  # 모든 문서를 조회합니다.
+# # 모든 문서 조회
+# documents = collection.find()  # 모든 문서를 조회합니다.
+#
+# # 결과 출력
+# for doc in documents:
+#     print(doc)
+
+# 특정 필드만 조회
+field_to_retrieve = ['unique_diary_id','created_at' ] # 필드 이름을 변경하세요.
+# projection = {field_to_retrieve: 1}  # 1은 해당 필드를 포함하겠다는 의미입니다.
+projection = {field: 1 for field in field_to_retrieve}
+# 모든 문서에서 특정 필드만 조회
+documents = collection.find({}, projection)  # 빈 딕셔너리 {}는 모든 문서를 조회합니다.
 
 # 결과 출력
 for doc in documents:
     print(doc)
+
+
+
+
+# # 업데이트할 조건과 새 값 설정
+# filter_condition = {'unique_diary_id': '20240812071053밤 바다와 치킨'}
+# new_value = {'$set': {'created_at': datetime(2024, 6, 12, 7, 10, 53, 729000)}}
+#
+# # 문서 업데이트
+# result = collection.update_one(filter_condition, new_value)
+#
+# # 결과 확인
+# if result.matched_count > 0:
+#     print(f'업데이트된 문서 수: {result.modified_count}'
+#           f'{result}')
+# else:
+#     print('해당 문서가 없습니다.')
