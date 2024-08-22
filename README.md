@@ -11,3 +11,6 @@
 - 여행 다이어리를 작성할 때마다 여행 일정과 다이어리 내용을 반영한 나만의 특별한 여행 뱃지를 얻을 수 있습니다.
 
 # 팀원 소개
+![2](https://github.com/user-attachments/assets/4d28dc9f-f5c7-4ac1-818a-31c6f7b47844)
+
+
